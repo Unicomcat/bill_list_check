@@ -2,4 +2,4 @@
 *.sqlite
 
 # pycharm file
-.idea
+.idea/
