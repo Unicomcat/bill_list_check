@@ -1,0 +1,5 @@
+# SQLite Databases
+*.sqlite
+
+# pycharm file
+.idea
