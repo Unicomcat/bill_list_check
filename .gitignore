@@ -1,5 +1,6 @@
 # SQLite Databases
 *.sqlite
-
+*.pyc
+*.xlsx
 # pycharm file
 /.idea
