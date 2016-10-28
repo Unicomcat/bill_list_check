@@ -2,5 +2,6 @@
 *.sqlite
 *.pyc
 *.xlsx
+*.txt
 # pycharm file
 /.idea

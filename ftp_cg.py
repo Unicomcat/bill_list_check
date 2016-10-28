@@ -4,7 +4,7 @@ import ftplib
 import os
 import socket
 
-HOST = '132.151.148.4'
+HOST = ''
 DIRN = 'R6'
 USERNAME = 'administrator'
 PASSWORD = 'igwb'
