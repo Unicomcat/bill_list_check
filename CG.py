@@ -2,7 +2,7 @@
 __author__ = 'unicomcat'
 import paramiko
 import time
-from database import BillType,BILL_SUMMARY
+from database import BillType,BILL_SUMMARY,HUAWEI,ZTE,NOKIA
 from database import database
 import re
 import sys
@@ -280,16 +280,33 @@ class CG(object):
             bill_txt.write(
                 u'最后一个文件'.ljust(20, ' ') + '\t' + self.bill_summary[bill_detail]['end_file'].ljust(20, ' ') + '\n\n')
 
+            if bill_detail == 'sgwcdr':
+                bill_type = 2
+            elif bill_detail == 'pgwcdr':
+                bill_type = 4
+            elif bill_detail =='scdr':
+                bill_type = 1
+            else:
+                bill_type = 0
             bill_instance = BILL_SUMMARY(DATE=self.bill_date,
                                          BEGIN_FILE_NAME=self.bill_summary[bill_detail]['begin_file'],
                                          LAST_FILE_NAME=self.bill_summary[bill_detail]['end_file'],
                                          FILE_SIZE=self.bill_summary[bill_detail]['total_size'],
                                          BILL_NUM = self.bill_summary[bill_detail]['file_num'],
-                                         BILL_TYPE = self.bill_type,
+                                         BILL_TYPE = bill_type,
                                          CG_NAME = self.cg_name
                                          )
-            database.session.add(bill_instance)
-            database.session.commit()
+            exist_bill_summary = database.session.query(BILL_SUMMARY).filter(BILL_SUMMARY.CG_NAME==self.cg_name, \
+                                                                       BILL_SUMMARY.DATE==self.bill_date, \
+                                                                       BILL_SUMMARY.BILL_TYPE==bill_type).all()
+
+
+            if not exist_bill_summary:
+                database.session.add(bill_instance)
+                database.session.commit()
+            else:
+                print "this data is already in database  "  + self.cg_name+bill_detail+self.bill_date
+
 
 
         bill_txt.close()
