@@ -1,0 +1,27 @@
+name: Auto Refresh Commit  # 工作流名称
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # 每15分钟运行一次（UTC 时间）；用 crontab.guru 测试
+  workflow_dispatch:  # 允许手动触发测试
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest  # Ubuntu 环境
+    steps:
+      - name: Checkout repository  # 检出代码
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # GitHub Token 权限
+          ref: master  # 替换为你的默认分支，如 master
+
+      - name: Generate refresh content  # 生成无用变化（追加时间戳）
+        run: |
+          echo "Auto refresh at $(date -u): Nothing important, just ping." >> README.md  # 追加到 README；如果无 README，改成新文件如 refresh-log.txt
+
+      - name: Commit and push if changed  # 自动 commit 和 push（无变化不提交）
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto: Refresh ping - $(date -u)"  # 提交消息
+          file_pattern: '*.md'  # 只提交 .md 文件（可改）
+          branch: master  # 你的默认分支
